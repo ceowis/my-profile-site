@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>파란당근 | 프론트엔드 개발자</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            teal: {
+              dark:  '#0d6b5e',
+              DEFAULT: '#1a8a7a',
+              light: '#25b09e',
+              pale:  '#e6f7f5',
+            },
+          },
+          fontFamily: {
+            sans: ['Noto Sans KR', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+
+    /* 스크롤 페이드인 */
+    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* 타임라인 세로선 */
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 19px;
+      top: 28px;
+      bottom: -16px;
+      width: 2px;
+      background: #1a8a7a;
+    }
+    .timeline-item:last-child::before { display: none; }
+
+    /* 스킬 원형 진행바 */
+    .skill-ring { transition: stroke-dashoffset 1.2s ease; }
+  </style>
+</head>
+<body class="font-sans bg-gray-100 text-gray-800">
+
+  <!-- ── 네비게이션 ── -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-teal-dark shadow-lg">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <span class="text-white font-black text-xl tracking-wide">파란당근</span>
+
+      <!-- 데스크탑 메뉴 -->
+      <ul class="hidden md:flex gap-8 text-white text-sm font-medium">
+        <li><a href="#about"    class="hover:text-teal-light transition-colors">소개</a></li>
+        <li><a href="#skills"   class="hover:text-teal-light transition-colors">기술</a></li>
+        <li><a href="#projects" class="hover:text-teal-light transition-colors">프로젝트</a></li>
+        <li><a href="#contact"  class="hover:text-teal-light transition-colors">연락처</a></li>
+      </ul>
+
+      <!-- 모바일 햄버거 -->
+      <button id="menu-btn" class="md:hidden text-white focus:outline-none" aria-label="메뉴">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- 모바일 드롭다운 -->
+    <div id="mobile-menu" class="md:hidden hidden bg-teal-dark border-t border-teal-light/30">
+      <ul class="flex flex-col px-6 pb-4 gap-3 text-white text-sm font-medium">
+        <li><a href="#about"    class="block py-1 hover:text-teal-light" onclick="closeMobileMenu()">소개</a></li>
+        <li><a href="#skills"   class="block py-1 hover:text-teal-light" onclick="closeMobileMenu()">기술</a></li>
+        <li><a href="#projects" class="block py-1 hover:text-teal-light" onclick="closeMobileMenu()">프로젝트</a></li>
+        <li><a href="#contact"  class="block py-1 hover:text-teal-light" onclick="closeMobileMenu()">연락처</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="min-h-screen flex items-center bg-teal-dark pt-16">
+    <div class="max-w-6xl mx-auto px-6 w-full">
+      <div class="grid md:grid-cols-5 gap-10 items-center py-20">
+
+        <!-- 좌측 사이드바 (레퍼런스 구도) -->
+        <div class="md:col-span-2 flex flex-col items-center md:items-start gap-6">
+          <!-- 아바타 -->
+          <div class="w-40 h-40 rounded-2xl bg-teal-light/30 border-4 border-teal-light flex items-center justify-center shadow-xl">
+            <svg class="w-24 h-24 text-teal-light" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+            </svg>
+          </div>
+
+          <div>
+            <h1 class="text-4xl md:text-5xl font-black text-white leading-tight">파란당근</h1>
+            <p class="text-teal-light font-semibold text-lg mt-1">프론트엔드 개발자</p>
+          </div>
+
+          <p class="text-white/80 text-sm leading-relaxed">
+            저는 상암에 사는 아재입니다.<br/>
+            깔끔한 UI와 사용자 경험을 중요시하는<br/>
+            프론트엔드 개발자입니다.
+          </p>
+
+          <div class="flex flex-wrap gap-3">
+            <a href="#projects"
+               class="px-6 py-2.5 bg-teal-light text-white font-semibold rounded-lg hover:bg-white hover:text-teal-dark transition-all shadow">
+              프로젝트 보기
+            </a>
+            <a href="#contact"
+               class="px-6 py-2.5 border-2 border-teal-light text-teal-light font-semibold rounded-lg hover:bg-teal-light hover:text-white transition-all">
+              연락하기
+            </a>
+          </div>
+        </div>
+
+        <!-- 우측 — 간략 정보 카드 (레퍼런스의 우측 콘텐츠 구도) -->
+        <div class="md:col-span-3 grid sm:grid-cols-2 gap-4">
+          <div class="bg-white/10 backdrop-blur rounded-2xl p-6 border border-white/20">
+            <div class="text-teal-light text-2xl mb-2">🌐</div>
+            <h3 class="text-white font-bold text-lg">HTML / CSS</h3>
+            <p class="text-white/70 text-sm mt-1">시맨틱 마크업과 반응형 레이아웃 설계</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur rounded-2xl p-6 border border-white/20">
+            <div class="text-teal-light text-2xl mb-2">⚡</div>
+            <h3 class="text-white font-bold text-lg">JavaScript</h3>
+            <p class="text-white/70 text-sm mt-1">바닐라 JS부터 모던 ES6+ 문법 활용</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur rounded-2xl p-6 border border-white/20">
+            <div class="text-teal-light text-2xl mb-2">🎨</div>
+            <h3 class="text-white font-bold text-lg">UI 디자인</h3>
+            <p class="text-white/70 text-sm mt-1">사용자 중심의 직관적인 인터페이스</p>
+          </div>
+          <div class="bg-white/10 backdrop-blur rounded-2xl p-6 border border-white/20">
+            <div class="text-teal-light text-2xl mb-2">📱</div>
+            <h3 class="text-white font-bold text-lg">반응형 웹</h3>
+            <p class="text-white/70 text-sm mt-1">모든 디바이스에서 최적화된 경험 제공</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ABOUT ── -->
+  <section id="about" class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid md:grid-cols-5 gap-12 items-start">
+
+        <!-- 좌측 타이틀 (레퍼런스 구도 유지) -->
+        <div class="md:col-span-2 fade-in">
+          <div class="inline-block bg-teal-dark text-white text-xs font-bold px-3 py-1 rounded mb-4 uppercase tracking-widest">About</div>
+          <h2 class="text-3xl font-black text-gray-900 leading-tight">
+            반갑습니다,<br/>
+            <span class="text-teal-DEFAULT">파란당근</span>입니다.
+          </h2>
+          <div class="w-12 h-1 bg-teal-DEFAULT mt-4 rounded"></div>
+        </div>
+
+        <!-- 우측 내용 -->
+        <div class="md:col-span-3 fade-in">
+          <p class="text-gray-600 leading-relaxed text-base mb-6">
+            저는 상암에 사는 아재입니다. 웹의 프론트엔드 영역에서 사용자가 직접 보고 느끼는 경험을
+            만드는 일을 합니다. 코드 한 줄이 실제 사람의 경험으로 이어지는 것에 보람을 느낍니다.
+          </p>
+          <p class="text-gray-600 leading-relaxed text-base mb-8">
+            HTML, CSS, JavaScript를 기반으로 깔끔하고 접근성 높은 웹 인터페이스를 만드는 것을 즐깁니다.
+            새로운 기술을 배우고 적용하는 것을 좋아하며, 항상 더 나은 사용자 경험을 고민합니다.
+          </p>
+
+          <!-- 간략 프로필 -->
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div class="flex items-center gap-3 p-4 bg-teal-pale rounded-xl">
+              <span class="text-teal-DEFAULT text-xl">📍</span>
+              <div>
+                <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Location</p>
+                <p class="text-gray-800 font-semibold text-sm">서울 상암동</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 p-4 bg-teal-pale rounded-xl">
+              <span class="text-teal-DEFAULT text-xl">💼</span>
+              <div>
+                <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Role</p>
+                <p class="text-gray-800 font-semibold text-sm">프론트엔드 개발자</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 p-4 bg-teal-pale rounded-xl">
+              <span class="text-teal-DEFAULT text-xl">✉️</span>
+              <div>
+                <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Email</p>
+                <p class="text-gray-800 font-semibold text-sm">abc@abc.com</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 p-4 bg-teal-pale rounded-xl">
+              <span class="text-teal-DEFAULT text-xl">🌱</span>
+              <div>
+                <p class="text-xs text-gray-500 font-medium uppercase tracking-wide">Status</p>
+                <p class="text-gray-800 font-semibold text-sm">새 기회 탐색 중</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SKILLS ── -->
+  <section id="skills" class="py-20 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid md:grid-cols-5 gap-12">
+
+        <!-- 좌측 타이틀 -->
+        <div class="md:col-span-2 fade-in">
+          <div class="inline-block bg-teal-dark text-white text-xs font-bold px-3 py-1 rounded mb-4 uppercase tracking-widest">Skills</div>
+          <h2 class="text-3xl font-black text-gray-900 leading-tight">기술 스택</h2>
+          <div class="w-12 h-1 bg-teal-DEFAULT mt-4 rounded"></div>
+          <p class="text-gray-500 mt-4 text-sm leading-relaxed">
+            웹 표준 기술을 기반으로<br/>사용자 중심의 인터페이스를 만듭니다.
+          </p>
+        </div>
+
+        <!-- 우측 스킬 카드 (레퍼런스의 원형 스킬 차트 구도) -->
+        <div class="md:col-span-3 fade-in">
+          <div class="grid grid-cols-3 gap-6">
+
+            <!-- HTML -->
+            <div class="flex flex-col items-center gap-3">
+              <div class="relative w-24 h-24">
+                <svg class="w-24 h-24 -rotate-90" viewBox="0 0 80 80">
+                  <circle cx="40" cy="40" r="34" fill="none" stroke="#e5e7eb" stroke-width="8"/>
+                  <circle cx="40" cy="40" r="34" fill="none" stroke="#1a8a7a" stroke-width="8"
+                    stroke-dasharray="213.6" stroke-dashoffset="43" stroke-linecap="round"
+                    class="skill-ring" data-offset="43"/>
+                </svg>
+                <span class="absolute inset-0 flex items-center justify-center text-lg font-black text-teal-DEFAULT">80%</span>
+              </div>
+              <div class="text-center">
+                <p class="font-bold text-gray-800">HTML</p>
+                <p class="text-xs text-gray-500">시맨틱 마크업</p>
+              </div>
+            </div>
+
+            <!-- CSS -->
+            <div class="flex flex-col items-center gap-3">
+              <div class="relative w-24 h-24">
+                <svg class="w-24 h-24 -rotate-90" viewBox="0 0 80 80">
+                  <circle cx="40" cy="40" r="34" fill="none" stroke="#e5e7eb" stroke-width="8"/>
+                  <circle cx="40" cy="40" r="34" fill="none" stroke="#1a8a7a" stroke-width="8"
+                    stroke-dasharray="213.6" stroke-dashoffset="64" stroke-linecap="round"
+                    class="skill-ring" data-offset="64"/>
+                </svg>
+                <span class="absolute inset-0 flex items-center justify-center text-lg font-black text-teal-DEFAULT">70%</span>
+              </div>
+              <div class="text-center">
+                <p class="font-bold text-gray-800">CSS</p>
+                <p class="text-xs text-gray-500">반응형 레이아웃</p>
+              </div>
+            </div>
+
+            <!-- JavaScript -->
+            <div class="flex flex-col items-center gap-3">
+              <div class="relative w-24 h-24">
+                <svg class="w-24 h-24 -rotate-90" viewBox="0 0 80 80">
+                  <circle cx="40" cy="40" r="34" fill="none" stroke="#e5e7eb" stroke-width="8"/>
+                  <circle cx="40" cy="40" r="34" fill="none" stroke="#1a8a7a" stroke-width="8"
+                    stroke-dasharray="213.6" stroke-dashoffset="85" stroke-linecap="round"
+                    class="skill-ring" data-offset="85"/>
+                </svg>
+                <span class="absolute inset-0 flex items-center justify-center text-lg font-black text-teal-DEFAULT">60%</span>
+              </div>
+              <div class="text-center">
+                <p class="font-bold text-gray-800">JavaScript</p>
+                <p class="text-xs text-gray-500">DOM / ES6+</p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- 추가 기술 태그 -->
+          <div class="mt-8 flex flex-wrap gap-2">
+            <span class="px-3 py-1.5 bg-teal-dark text-white text-xs font-semibold rounded-full">Tailwind CSS</span>
+            <span class="px-3 py-1.5 bg-teal-DEFAULT text-white text-xs font-semibold rounded-full">Flexbox</span>
+            <span class="px-3 py-1.5 bg-teal-DEFAULT text-white text-xs font-semibold rounded-full">CSS Grid</span>
+            <span class="px-3 py-1.5 bg-gray-200 text-gray-700 text-xs font-semibold rounded-full">Git</span>
+            <span class="px-3 py-1.5 bg-gray-200 text-gray-700 text-xs font-semibold rounded-full">Figma</span>
+            <span class="px-3 py-1.5 bg-gray-200 text-gray-700 text-xs font-semibold rounded-full">VS Code</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROJECTS ── -->
+  <section id="projects" class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+
+      <div class="grid md:grid-cols-5 gap-12 mb-12">
+        <!-- 좌측 타이틀 -->
+        <div class="md:col-span-2 fade-in">
+          <div class="inline-block bg-teal-dark text-white text-xs font-bold px-3 py-1 rounded mb-4 uppercase tracking-widest">Projects</div>
+          <h2 class="text-3xl font-black text-gray-900 leading-tight">프로젝트</h2>
+          <div class="w-12 h-1 bg-teal-DEFAULT mt-4 rounded"></div>
+          <p class="text-gray-500 mt-4 text-sm leading-relaxed">
+            직접 만든 프로젝트들을<br/>소개합니다.
+          </p>
+        </div>
+
+        <!-- 우측 — 타임라인 스타일 프로젝트 목록 (레퍼런스 타임라인 구도) -->
+        <div class="md:col-span-3 fade-in">
+          <div class="space-y-6">
+
+            <div class="relative pl-12 timeline-item">
+              <div class="absolute left-0 top-0 w-10 h-10 bg-teal-dark text-white rounded-lg flex items-center justify-center font-black text-xs shadow">
+                01
+              </div>
+              <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 hover:border-teal-light hover:shadow-md transition-all">
+                <div class="flex items-start justify-between mb-2">
+                  <h3 class="font-bold text-gray-900">포트폴리오 웹사이트</h3>
+                  <span class="text-xs text-teal-DEFAULT font-semibold bg-teal-pale px-2 py-0.5 rounded">2024</span>
+                </div>
+                <p class="text-gray-500 text-sm mb-3">HTML, CSS, JavaScript, Tailwind CSS로 제작한 개인 포트폴리오 사이트</p>
+                <div class="flex gap-2 flex-wrap">
+                  <span class="text-xs bg-teal-dark text-white px-2 py-0.5 rounded">HTML</span>
+                  <span class="text-xs bg-teal-DEFAULT text-white px-2 py-0.5 rounded">CSS</span>
+                  <span class="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded">JavaScript</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="relative pl-12 timeline-item">
+              <div class="absolute left-0 top-0 w-10 h-10 bg-teal-DEFAULT text-white rounded-lg flex items-center justify-center font-black text-xs shadow">
+                02
+              </div>
+              <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 hover:border-teal-light hover:shadow-md transition-all">
+                <div class="flex items-start justify-between mb-2">
+                  <h3 class="font-bold text-gray-900">할 일 관리 앱</h3>
+                  <span class="text-xs text-teal-DEFAULT font-semibold bg-teal-pale px-2 py-0.5 rounded">2024</span>
+                </div>
+                <p class="text-gray-500 text-sm mb-3">LocalStorage를 활용한 바닐라 JavaScript 투두리스트 앱</p>
+                <div class="flex gap-2 flex-wrap">
+                  <span class="text-xs bg-teal-dark text-white px-2 py-0.5 rounded">HTML</span>
+                  <span class="text-xs bg-teal-DEFAULT text-white px-2 py-0.5 rounded">CSS</span>
+                  <span class="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded">JavaScript</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="relative pl-12 timeline-item">
+              <div class="absolute left-0 top-0 w-10 h-10 bg-teal-light text-white rounded-lg flex items-center justify-center font-black text-xs shadow">
+                03
+              </div>
+              <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 hover:border-teal-light hover:shadow-md transition-all">
+                <div class="flex items-start justify-between mb-2">
+                  <h3 class="font-bold text-gray-900">날씨 대시보드</h3>
+                  <span class="text-xs text-teal-DEFAULT font-semibold bg-teal-pale px-2 py-0.5 rounded">2023</span>
+                </div>
+                <p class="text-gray-500 text-sm mb-3">OpenWeather API를 연동한 실시간 날씨 정보 대시보드</p>
+                <div class="flex gap-2 flex-wrap">
+                  <span class="text-xs bg-teal-dark text-white px-2 py-0.5 rounded">HTML</span>
+                  <span class="text-xs bg-teal-DEFAULT text-white px-2 py-0.5 rounded">CSS</span>
+                  <span class="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded">JavaScript</span>
+                  <span class="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded">REST API</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── CONTACT ── -->
+  <section id="contact" class="py-20 bg-teal-dark">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid md:grid-cols-5 gap-12">
+
+        <!-- 좌측 타이틀 -->
+        <div class="md:col-span-2 fade-in">
+          <div class="inline-block bg-white/20 text-white text-xs font-bold px-3 py-1 rounded mb-4 uppercase tracking-widest">Contact</div>
+          <h2 class="text-3xl font-black text-white leading-tight">연락처</h2>
+          <div class="w-12 h-1 bg-teal-light mt-4 rounded"></div>
+          <p class="text-white/70 mt-4 text-sm leading-relaxed">
+            프로젝트 협업이나 채용 관련<br/>문의를 환영합니다.
+          </p>
+
+          <div class="mt-8 space-y-4">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 bg-teal-light/20 rounded-lg flex items-center justify-center text-teal-light">
+                ✉️
+              </div>
+              <div>
+                <p class="text-white/60 text-xs uppercase tracking-wide">Email</p>
+                <a href="mailto:abc@abc.com" class="text-white font-semibold text-sm hover:text-teal-light transition-colors">abc@abc.com</a>
+              </div>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 bg-teal-light/20 rounded-lg flex items-center justify-center text-teal-light">
+                📍
+              </div>
+              <div>
+                <p class="text-white/60 text-xs uppercase tracking-wide">Location</p>
+                <p class="text-white font-semibold text-sm">서울특별시 마포구 상암동</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 우측 연락 폼 -->
+        <div class="md:col-span-3 fade-in">
+          <form id="contact-form" class="space-y-4" onsubmit="handleSubmit(event)">
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-white/70 text-xs uppercase tracking-wide mb-1.5">이름</label>
+                <input type="text" placeholder="홍길동"
+                  class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-teal-light focus:bg-white/15 transition text-sm" />
+              </div>
+              <div>
+                <label class="block text-white/70 text-xs uppercase tracking-wide mb-1.5">이메일</label>
+                <input type="email" placeholder="your@email.com"
+                  class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-teal-light focus:bg-white/15 transition text-sm" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-white/70 text-xs uppercase tracking-wide mb-1.5">제목</label>
+              <input type="text" placeholder="문의 제목을 입력해주세요"
+                class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-teal-light focus:bg-white/15 transition text-sm" />
+            </div>
+            <div>
+              <label class="block text-white/70 text-xs uppercase tracking-wide mb-1.5">메시지</label>
+              <textarea rows="5" placeholder="메시지를 입력해주세요..."
+                class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-teal-light focus:bg-white/15 transition text-sm resize-none"></textarea>
+            </div>
+            <button type="submit"
+              class="w-full py-3 bg-teal-light text-white font-bold rounded-xl hover:bg-white hover:text-teal-dark transition-all shadow-lg text-sm tracking-wide">
+              메시지 보내기
+            </button>
+          </form>
+          <p id="form-msg" class="hidden mt-3 text-center text-teal-light font-semibold text-sm"></p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="bg-gray-900 py-8 text-center">
+    <p class="text-gray-500 text-sm">
+      © 2024 <span class="text-teal-light font-semibold">파란당근</span>. All rights reserved.
+    </p>
+    <p class="text-gray-600 text-xs mt-1">Built with HTML · CSS · JavaScript · Tailwind CSS</p>
+  </footer>
+
+  <!-- ── JavaScript ── -->
+  <script>
+    // 모바일 메뉴 토글
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    function closeMobileMenu() {
+      mobileMenu.classList.add('hidden');
+    }
+
+    // 스크롤 페이드인
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // 연락처 폼 제출 처리
+    function handleSubmit(e) {
+      e.preventDefault();
+      const msg = document.getElementById('form-msg');
+      msg.textContent = '메시지가 전송되었습니다. 감사합니다! 😊';
+      msg.classList.remove('hidden');
+      e.target.reset();
+      setTimeout(() => msg.classList.add('hidden'), 4000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+# Claude Code 로컬 설정
+.claude/
+
+# OS 생성 파일
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 임시/캐시 파일
+*.tmp
+*.log
+*.cache
+
+# 스크린샷 및 미디어 파일 (필요 시 제거)
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# 에디터 설정
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node.js (향후 사용 시 대비)
+node_modules/
+npm-debug.log*
